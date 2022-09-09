@@ -1,0 +1,233 @@
+const express = require("express"); // on importe express.js
+
+const excel = express();
+const pool = require("../config/db");
+const bodyParser = require("body-parser");
+const reader = require("xlsx");
+const fs = require("fs");
+
+excel.use(bodyParser.json());
+excel.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+
+excel.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With,Content-Type,Accept,Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
+});
+
+const multer = require("multer");
+const { stringify } = require("querystring");
+const uploads = multer({ dest: "../uploads" });
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const fileFilter = (req, file, cb) => {
+  if (file.MimeType === "Image/xlsx" || file.MimeType === "Image.xls") {
+    cb(null, false);
+  } else cb(null, true);
+};
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
+
+/////////////////////////////////////////////////////////////////////////////importer////////////////////////////////////////////////////////////////////////////////////////////////////////////
+excel.post("/uploads/excel", upload.single("excel"), async (req, res) => {
+  const fileName = req.file.originalname;
+  try {
+    const file = reader.readFile("uploads/" + fileName);
+
+    let data = [];
+
+    const sheets = file.SheetNames;
+
+    for (let i = 0; i < sheets.length; i++) {
+      const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]]);
+      temp.forEach((res) => {
+        data.push(res);
+      });
+    }
+
+    let filteredData = [];
+    for (let d of data) {
+      const obj = {
+        Code_article: d.Code_article,
+        Ordre_fabrication: d.Ordre_fabrication,
+        Qté_ouv: d.Qté_ouv,
+        Date_de_lancement: d.Date_de_lancement,
+      };
+      filteredData.push(obj);
+    }
+
+    //var jsonObj = JSON.parse(jsonData);
+    var jsonContent = JSON.stringify(filteredData);
+    console.log(jsonContent);
+
+    fs.writeFile(
+      "uploads/tableau162.json",
+      jsonContent,
+      "utf8",
+      function (err) {
+        if (err) {
+          console.log("An error occured while writing JSON Object to File.");
+          return console.log(err);
+        }
+        console.log("JSON file has been saved.");
+      }
+    );
+    res.send(filteredData);
+  } catch (err) {
+    res.send(err);
+  }
+});
+////////////////////////////////////////////////////////////rafraichir la page apres l'ajout d'un article//////////////////////////////////////////////////////////////////////////////
+excel.get("/rafraichir", async (req, res) => {
+  const recherche = await pool.query(
+    "SELECT * from article",
+    async (error, result) => {
+      if (error) {
+        res.json(error);
+      }
+      var jsonContent = JSON.stringify(result.rows);
+      console.log(jsonContent);
+      fs.writeFile(
+        "uploads/articles.json",
+        jsonContent,
+        "utf8",
+        function (err) {
+          if (err) {
+            console.log("An error occured while writing JSON Object to File.");
+            return console.log(err);
+          }
+          console.log("JSON file has been saved.");
+        }
+      );
+      //////
+
+      /////
+    }
+  );
+});
+/////////////////////////////////////////////////////////GET tableau formé de 16.2 et le tableau des articles////////////////////////////////////////////////////////
+excel.get("/uploads/excel", async (req, res) => {
+  let groupe = [];
+  let all = [];
+  //////
+  try {
+    const tabjsonFile = require("../uploads/tableau162.json");
+    const articlesjsonFile = require("../uploads/articles.json");
+    for (let article of articlesjsonFile) {
+      for (let element of tabjsonFile) {
+        if (article.article == element.Code_article) {
+          const obj = {
+            Code_article: element.Code_article,
+            Ordre_fabrication: element.Ordre_fabrication,
+            Qté_ouv: element.Qté_ouv,
+            Date_de_lancement: element.Date_de_lancement,
+            programme: element.programme,
+            perimetre_de_production: article.perimetre_de_production,
+            ligne_de_production: article.ligne_de_production,
+            gestionnaire_client: article.gestionnaire_client,
+            superieur_production: article.superieur_production,
+          };
+          groupe.push(obj);
+        }
+      }
+      all.push(groupe);
+    }
+    res.json(all);
+  } catch (err) {
+    throw err;
+  }
+
+  /////
+});
+///////////////////////////////////////////////////////////////////Rechercher à partir d'un code/////////////////////////////////////////////////////////////////////////////////////////////////////
+excel.get("/uploads/:code", async (req, res) => {
+  const code_article = req.params.code;
+  let result1 = [];
+  let result2 = {};
+  let resultF = [];
+  try {
+    const jsonFile = require("../uploads/tableau162.json");
+    for (let obj of jsonFile) {
+      if (code_article == obj.Code_article) {
+        result1.push(obj);
+      }
+    }
+    const requete = await pool.query(
+      "SELECT Programme ,Perimetre_de_Production ,Ligne_de_Production,Gestionnaire_Client ,Superieur_Production  from article where article=$1",
+      [code_article],
+      async (error, result) => {
+        if (error) {
+          throw error;
+        } else {
+          result2 = result.rows[0];
+
+          for (let j = 0; j < result1.length; j++) {
+            const obj = {
+              Code_article: result1[j].Code_article,
+              Ordre_fabrication: result1[j].Ordre_fabrication,
+              Qté_ouv: result1[j].Qté_ouv,
+              Date_de_lancement: result1[j].Date_de_lancement,
+              programme: result2.programme,
+              perimetre_de_production: result2.perimetre_de_production,
+              ligne_de_production: result2.ligne_de_production,
+              gestionnaire_client: result2.gestionnaire_client,
+              superieur_production: result2.superieur_production,
+            };
+            resultF.push(obj);
+          }
+          res.json(resultF);
+          const requete2 = await pool.query(
+            "INSERT INTO tabarticle162 (code_article,ordre_fabrication,qt_ouv,date_de_lancement,programme,perimetre_de_production,ligne_de_production,gestionnaire_client,superieur_production) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9);",
+            [
+              result1.Code_article,
+              result1.Ordre_fabrication,
+              result1.Qté_ouv,
+              result1.Date_de_lancement,
+              result2.programme,
+              result2.perimetre_de_production,
+              result2.ligne_de_production,
+              result2.gestionnaire_client,
+              result2.superieur_production,
+            ],
+            async (error, result) => {
+              if (result) {
+                res.send(result);
+              } else {
+                throw error;
+              }
+            }
+          );
+        }
+      }
+    );
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module.exports = excel;

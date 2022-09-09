@@ -1,0 +1,1 @@
+Copy mq2706(ordre_fab,composant,qt_ouv ) from 'C:\Users\Amen\Desktop\mq.csv' delimiter  ';' csv header encoding 'windows-1251'

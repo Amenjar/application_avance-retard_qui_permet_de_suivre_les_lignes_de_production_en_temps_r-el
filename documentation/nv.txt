@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS public.tableau162
+(
+    code_article character varying(255) COLLATE pg_catalog."default",
+    ordre_fabrication character varying(255) COLLATE pg_catalog."default",
+    "qté_ouv" character varying(255) COLLATE pg_catalog."default",
+    date_de_lancement character varying(255) COLLATE pg_catalog."default"
+)
+
+CREATE TABLE IF NOT EXISTS public.sep_manquants
+(
+    composant character varying COLLATE pg_catalog."default" NOT NULL,
+    delai character varying COLLATE pg_catalog."default" NOT NULL
+)

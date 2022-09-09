@@ -1,0 +1,10 @@
+Article;Code Porteur;Programme;Perimetre de Production;Ligne de Production;PDP/MRP;Achet/Plan;Gestionnaire Client;Sup?rieur Production;Dern Op Kitting;Dern Op Prod;Dern Op Test;Dern Op Ctrl;TG Unit kitting;TG Unit Prod;TG Unit Test;TG Unit Contr?le;Kitting;Production;Test;Contr?le;Attente Amont/Aval Kitting;Attente Amont/Aval Production;Attente Amont/Aval Test;Attente Amont/Aval Contr?le;amont Kitting (h);aval Kitting(h);amont Production;Aval Production;Amont Test;Aval Test;Amont Contr?le;Aval Contr?le;Net VA;Brut VA
+GZ0025205Y01;C0113;A350;Torons Fini;CŸblage torons Fini A350;;ZT3B/PLA;Jaibi Chaima;Hbibi Med Souheib;Z00123;Z301618;Z306322;;;70,7;2,25;4;1;10;1;1;1;1;1;0;4;4;4;0;8;0;0;0;9,62;15
+GZ0025572Y01;C0113;A350;Torons Fini;CŸblage torons Fini A350;;ZT3B/PLA;Jaibi Chaima;Hbibi Med Souheib;Z00123;Z301618;Z306322;;;70,7;2,25;4;1;10;1;1;1;1;1;0;4;4;4;0;8;0;0;0;9,62;15
+GZ0026930Y02;C0113;A350;Torons Fini;CŸblage torons Fini A350;;ZT3B/PLA;Jaibi Chaima;Hbibi Med Souheib;Z00123;Z301210;Z306321;;;7,5;1,75;1;1;2;1;1;1;1;1;0;4;4;4;0;8;0;0;0;1,28;7
+GZ0026931Y02;C0113;A350;Torons Fini;CŸblage torons Fini A350;;ZT3B/PLA;Jaibi Chaima;Hbibi Med Souheib;Z00123;Z301210;Z306321;;;7,5;1,75;1;1;2;1;1;1;1;1;0;4;4;4;0;8;0;0;0;1,28;7
+GZ0010862Y00;C0113;A350;TORON SF A350;TORON SF A350 (3);;ZT3E/PLA;Jaibi Chaima;Omri Saleheddin;Z00123;Z301210;Z306120;;;23;0,75;0,75;1;3;1;1;1;0;1;0;4;4;4;0;8;0;0;0;3,06;7
+GZ0010863Y00;C0113;A350;TORON SF A350;TORON SF A350 (3);;ZT3E/PLA;Jaibi Chaima;Omri Saleheddin;Z00123;Z301210;Z306120;;;23;0,75;0,75;1;3;1;1;1;0;1;0;4;4;4;0;8;0;0;0;3,06;7
+GZ0012123Y00;C0113;A350;TORON SF A350;TORON SF A350 (3);;ZT3E/PLA;Jaibi Chaima;Omri Saleheddin;Z00123;Z301210;Z306120;;;11,75;0,75;0,75;1;2;1;1;1;0;1;0;4;4;4;0;8;0;0;0;1,66;6
+GZ0013514Y00;C0113;A350;TORON SF A350;TORON SF A350 (3);;ZT3E/PLA;Jaibi Chaima;Omri Saleheddin;Z00123;Z301210;Z306120;;;11,75;0,75;0,75;1;2;1;1;1;0;1;0;4;4;4;0;8;0;0;0;1,66;6
+GZ0015177Y01;C0113;A350;TORON SF A350;TORON SF A350 (5);;ZT3E/PLA;Jaibi Chaima;Omri Saleheddin;Z00123;Z301410;Z306120;;;5,25;1;0,83;1;1;1;1;1;0;1;0;4;4;4;0;8;0;0;0;0,89;5
